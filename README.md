@@ -32,6 +32,58 @@ TODO
    * 主にRepositoryクラスで構成される。
   
 ### Controllerクラス
+```
+@RestController
+@RequestMapping("/addresses")
+@AllArgsConstructor
+public class AddressController {
+
+	private final AddressService addressService;
+
+	@GetMapping("/{id}")
+	public ResponseEntity<AddressResponse> get(@PathVariable("id") Long id) {
+		Address address = this.addressService.getAddress(id);
+		AuditLogger.log(CustomerAuditLogCode.ADDRESS_READ.getCode(true));
+		return new ResponseEntity<>(AddressResponse.newAddressResponse(address), HttpStatus.OK);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<AddressResponse>> list() {
+		List<Address> addresses = this.addressService.listAddress();
+		AuditLogger.log(CustomerAuditLogCode.ADDRESS_READ.getCode(true));
+		return new ResponseEntity<>(AddressResponse.newAddressesResponse(addresses), HttpStatus.OK);
+	}
+
+	@PostMapping
+	public ResponseEntity<AddressResponse> create(@RequestBody AddressPostRequest req) {
+		Address address = AddressPostRequest.newAddress(req);
+		Address created = this.addressService.create(address);
+		AuditLogger.log(CustomerAuditLogCode.ADDRESS_CREATE.getCode(true), created, req);
+		return new ResponseEntity<>(AddressResponse.newAddressResponse(created), HttpStatus.OK);
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<AddressResponse> update(@PathVariable("id") Long id, @RequestBody AddressPutRequest req) {
+		Address address = AddressPutRequest.newAddress(req);
+		Address updated = this.addressService.update(id, address);
+		AuditLogger.log(CustomerAuditLogCode.ADDRESS_UPDATE.getCode(true), updated, req);
+		return new ResponseEntity<>(AddressResponse.newAddressResponse(updated), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> delete(@PathVariable("id") Long id) {
+		return  this.addressService.findAddress(id).map(address -> {
+			this.addressService.delete(address);
+			AuditLogger.log(CustomerAuditLogCode.ADDRESS_DELETE.getCode(true), address, id);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}).orElseGet(() -> {
+			AuditLogger.log(CustomerAuditLogCode.ADDRESS_DELETE.getCode(false), id);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		});
+	}
+}
+
+```
 
 ### Serviceクラス
 
