@@ -200,3 +200,38 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
 - LocalDateTimeの利用
 ```
 ```
+
+- Lombokの利用
+```
+   [Lombokなし]
+   public class Data {
+   	
+	private String str1;
+	private String str2;
+	
+	public Data(String str1, String str2) {
+		this.str1 = str1;
+		this.str2 = str2;
+	}
+	
+	public String getStr1() {
+		return this.str1;
+	}
+	
+	public void setStr1(String str1) {
+		this.str1 = str1;
+	}
+	
+	・・・
+   }
+   
+   [Lombokあり]
+   @Data
+   @AllArgsConstructor
+   public class Data {
+   	
+   	private String str1;
+	private String str2;
+   }
+
+```
