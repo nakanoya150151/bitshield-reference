@@ -86,10 +86,79 @@ public class AddressController {
 ```
 
 ### Serviceクラス
+```
+@Service
+@AllArgsConstructor
+public class AddressService {
+
+	private final AddressRepository addressRepository;
+
+	public Address getAddress(Long id) {
+		return this.addressRepository.findById(id).orElseThrow(() -> new ApplicationException(ApplicationHttpErrors.UNEXPECTED));
+	}
+
+	public Optional<Address> findAddress(Long id) {
+		return this.addressRepository.findById(id);
+	}
+
+	public List<Address> listAddress() {
+		return this.addressRepository.findAll();
+	}
+
+	public Address create(Address address) {
+		return this.addressRepository.save(address);
+	}
+
+	public Address update(Long id, Address address) {
+		Address old = this.getAddress(id);
+		return old.update(address);
+	}
+        ・・・
+}
+```
 
 ### Entityクラス
+```
+@Entity
+@Data
+@Where(clause = "is_deleted = 0")
+@EqualsAndHashCode(of = "id", callSuper = false)
+@AllArgsConstructor
+@NoArgsConstructor
+public class Address extends EntityBase {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	private Long walletId;
+
+	private String path;
+
+	public Address update(Address address) {
+		this.walletId = address.getWalletId();
+		this.path = address.getPath();
+		return this;
+	}
+}
+```
 
 ### Repositoryクラス
+```
+public interface AddressRepository extends JpaRepositoryBase<Address, Long>, JpaSpecificationExecutor<Address> {
+
+}
+
+@NoRepositoryBean
+public interface JpaRepositoryBase<T extends EntityBase, ID extends Serializable> extends JpaRepository<T, ID> {
+
+	default void logicalDelete(T entity) {
+		entity.setDeleted(true);
+	}
+}
+
+```
+
 
 ### 例外ハンドリング
 
