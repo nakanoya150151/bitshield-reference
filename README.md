@@ -64,3 +64,18 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
           .collect(Collectors.toList());
 ```
  - Optionalの利用
+```
+   [Java7以前]
+   Cashflow cashflow = this.findById(id);
+   if (cashflow != null) {
+      this.cashflowRepository.save(cashflow);
+   }
+   
+   [Java8以降]　
+   Optinal<Cashflow> cashflow = this.repository.findById(id);
+   cashflow.ifPresent(data -> this.cashflowRepository.save(data);
+```
+
+- LocalDateTimeの利用
+```
+```
