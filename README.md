@@ -264,8 +264,8 @@ public class AddressControllerTest {
 	@Before
 	public void setupMockMvc() throws Exception {
 		mockMvc = MockMvcBuilders.standaloneSetup(new AddressController(mockAddressService))
-				.addFilter(new ApiOncePreRequestFilter())
-				.build();
+			.addFilter(new ApiOncePreRequestFilter())
+			.build();
 	}
 
 	@Test
@@ -276,11 +276,11 @@ public class AddressControllerTest {
 
 		mockMvc.perform(get("/addresses/1"))
 		.andExpect(
-				status().isOk()
+			status().isOk()
 		).andExpect(
-				result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\":100,\"walletId\":9999,\"path\":\"999path\",\"updateDateTime\":null}"))
+			result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\":100,\"walletId\":9999,\"path\":\"999path\",\"updateDateTime\":null}"))
 		).andDo(
-				print()
+			print()
 		);
 	}
 
@@ -292,12 +292,12 @@ public class AddressControllerTest {
 
 		mockMvc.perform(get("/addresses"))
 		.andExpect(
-				status().isOk()
+			status().isOk()
 		).andExpect(
-				result -> assertThat(result.getResponse().getContentAsString(),
-						is("[{\"id\":300,\"walletId\":7777,\"path\":\"777path\",\"updateDateTime\":null},{\"id\":200,\"walletId\":8888,\"path\":\"888path\",\"updateDateTime\":null}]"))
+			result -> assertThat(result.getResponse().getContentAsString(),
+				is("[{\"id\":300,\"walletId\":7777,\"path\":\"777path\",\"updateDateTime\":null},{\"id\":200,\"walletId\":8888,\"path\":\"888path\",\"updateDateTime\":null}]"))
 		).andDo(
-				print()
+			print()
 		);
 	}
 
@@ -308,16 +308,16 @@ public class AddressControllerTest {
 		.thenReturn(new Address(100L, 9999L, "999path"));
 
 		AddressPostRequest request = AddressPostRequest.builder()
-				.walletId(9999L)
-				.path("999path")
-				.build();
+			.walletId(9999L)
+			.path("999path")
+			.build();
 
 		mockMvc.perform(
-				post("/addresses")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(getObjectMapper().writeValueAsBytes(request)))
+			post("/addresses")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(getObjectMapper().writeValueAsBytes(request)))
 		.andExpect(
-				status().isOk()
+			status().isOk()
 		).andExpect(
 			result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\":100,\"walletId\":9999,\"path\":\"999path\",\"updateDateTime\":null}"))
 		).andDo(
