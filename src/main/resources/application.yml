@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  application:
+    name: wallet-sample
+      
+server:
+  port: 28001
+  servlet:
+    context-path: /api
