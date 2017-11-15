@@ -272,40 +272,40 @@ public class AddressControllerTest {
 	public void testGet() throws Exception {
 
 		Mockito.when(mockAddressService.getAddress(Mockito.anyLong()))
-					.thenReturn(new Address(100L, 9999L, "999path"));
+		.thenReturn(new Address(100L, 9999L, "999path"));
 
 		mockMvc.perform(get("/addresses/1"))
-			.andExpect(
-					status().isOk()
-			).andExpect(
-					result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\":100,\"walletId\":9999,\"path\":\"999path\",\"updateDateTime\":null}"))
-			).andDo(
-					print()
-			);
+		.andExpect(
+				status().isOk()
+		).andExpect(
+				result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\":100,\"walletId\":9999,\"path\":\"999path\",\"updateDateTime\":null}"))
+		).andDo(
+				print()
+		);
 	}
 
 	@Test
 	public void testList() throws Exception {
 
 		Mockito.when(mockAddressService.listAddress())
-					.thenReturn(List.of(new Address(200L, 8888L, "888path"), new Address(300L, 7777L, "777path")));
+		.thenReturn(List.of(new Address(200L, 8888L, "888path"), new Address(300L, 7777L, "777path")));
 
 		mockMvc.perform(get("/addresses"))
-			.andExpect(
-					status().isOk()
-			).andExpect(
-					result -> assertThat(result.getResponse().getContentAsString(),
-							is("[{\"id\":300,\"walletId\":7777,\"path\":\"777path\",\"updateDateTime\":null},{\"id\":200,\"walletId\":8888,\"path\":\"888path\",\"updateDateTime\":null}]"))
-			).andDo(
-					print()
-			);
+		.andExpect(
+				status().isOk()
+		).andExpect(
+				result -> assertThat(result.getResponse().getContentAsString(),
+						is("[{\"id\":300,\"walletId\":7777,\"path\":\"777path\",\"updateDateTime\":null},{\"id\":200,\"walletId\":8888,\"path\":\"888path\",\"updateDateTime\":null}]"))
+		).andDo(
+				print()
+		);
 	}
 
 	@Test
 	public void testCreate() throws Exception {
 
 		Mockito.when(mockAddressService.create(Mockito.any()))
-					.thenReturn(new Address(100L, 9999L, "999path"));
+		.thenReturn(new Address(100L, 9999L, "999path"));
 
 		AddressPostRequest request = AddressPostRequest.builder()
 				.walletId(9999L)
@@ -316,13 +316,13 @@ public class AddressControllerTest {
 				post("/addresses")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(getObjectMapper().writeValueAsBytes(request)))
-			.andExpect(
+		.andExpect(
 				status().isOk()
-			).andExpect(
-				result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\":100,\"walletId\":9999,\"path\":\"999path\",\"updateDateTime\":null}"))
-			).andDo(
-				print()
-			);
+		).andExpect(
+			result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\":100,\"walletId\":9999,\"path\":\"999path\",\"updateDateTime\":null}"))
+		).andDo(
+			print()
+		);
 	}	
 ```
 
