@@ -235,3 +235,36 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
    }
 
 ```
+## テストポリシー
+JUnit5を使用する。
+Controller、Service、Entity毎にテストクラスを作成し、
+他レイヤーの呼び出しはMockitoを使用する。
+テスト実行を高速化するため、DIコンテナを使用せずにテストが完結するよう
+ControllerとServiceではコンストラクタインジェクションを使用する。
+```
+private MockMvc mockMvc;
+@Mock
+private AddressService mockAddressService;
+
+@BeforeAll
+public void setUp() throwsException {
+	mockMvc = MockMvcBuilders.standaloneSetup(new AddressController(mockAddressService))
+		.addFilter(new ApiOncePerRequestFilter)
+		.build();
+}
+
+@Test
+public void testGet() throws Exception {
+	Mockito.when(mockAddressService.getAddress(Mockito.anyLong()))
+		.thenReturn(new Address(100L, 9999L, "999path"));
+		
+	mockMvc.perform(get("/addresses/1"))
+		.andExpect(
+			status().isOk()
+		).andExpect(
+			result -> assertThat(result.getResponse().getContentAsString(), is("{\"id\": 100, (省略)}")
+		).andDo(
+			print()
+		);
+}
+```
