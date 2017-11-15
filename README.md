@@ -258,7 +258,7 @@ public void testGet() throws Exception {
 	Mockito.when(mockAddressService.getAddress(Mockito.anyLong()))
 		.thenReturn(new Address(100L, 9999L, "999path"));
 		
-	mockMvc.perform(get("/addresses/1"))
+	mockMvc.perform(get("/addresses/100"))
 		.andExpect(
 			status().isOk()
 		).andExpect(
