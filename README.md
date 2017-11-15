@@ -32,7 +32,7 @@ TODO
    * 主にRepositoryクラスで構成される。
   
 ### Controllerクラス
-```
+```java:AddressController.java
 @RestController
 @RequestMapping("/addresses")
 @AllArgsConstructor
@@ -55,7 +55,7 @@ public class AddressController {
 	}
 
 	@PostMapping
-	public ResponseEntity<AddressResponse> create(@RequestBody AddressPostRequest req) {
+	public ResponseEntity<AddressResponse> create(@RequestBody @Validated AddressPostRequest req) {
 		Address address = AddressPostRequest.newAddress(req);
 		Address created = this.addressService.create(address);
 		AuditLogger.log(CustomerAuditLogCode.ADDRESS_CREATE.getCode(true), created, req);
@@ -63,7 +63,7 @@ public class AddressController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<AddressResponse> update(@PathVariable("id") Long id, @RequestBody AddressPutRequest req) {
+	public ResponseEntity<AddressResponse> update(@PathVariable("id") Long id, @RequestBody @Validated AddressPutRequest req) {
 		Address address = AddressPutRequest.newAddress(req);
 		Address updated = this.addressService.update(id, address);
 		AuditLogger.log(CustomerAuditLogCode.ADDRESS_UPDATE.getCode(true), updated, req);
@@ -82,7 +82,6 @@ public class AddressController {
 		});
 	}
 }
-
 ```
 
 ### Serviceクラス
