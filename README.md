@@ -92,7 +92,7 @@ public class AddressController {
 ```
 
 ### Serviceクラス
-```
+```java:AddressService.java
 @Service
 @AllArgsConstructor
 public class AddressService {
@@ -130,7 +130,7 @@ public class AddressService {
 ```
 
 ### Entityクラス
-```
+```java:Address.java
 @Entity
 @Data
 @Where(clause = "is_deleted = 0")
@@ -156,11 +156,13 @@ public class Address extends EntityBase {
 ```
 
 ### Repositoryクラス
-```
+```java:AddressRepository.java
 public interface AddressRepository extends JpaRepositoryBase<Address, Long>, JpaSpecificationExecutor<Address> {
 	// 複雑な条件による操作のみ記載
 }
+```
 
+```java:JpaRepositoryBean.java
 @NoRepositoryBean
 public interface JpaRepositoryBase<T extends EntityBase, ID extends Serializable> extends JpaRepository<T, ID> {
 
@@ -168,7 +170,6 @@ public interface JpaRepositoryBase<T extends EntityBase, ID extends Serializable
 		entity.setDeleted(true);
 	}
 }
-
 ```
 
 
@@ -177,7 +178,7 @@ Javaには検査例外(Exception系)と非検査例外(RuntimeException系)が�
 
 スローされた例外はControllerをまたいで@ControllerAdviceが付与されたハンドリングクラスで処理される。
 
-```
+```java:ApplicationExceptionHandler.java
 @ControllerAdvice
 public class ApplicationExceptionHander extends ResponseEntityExceptionHandler {
 
@@ -195,7 +196,7 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
 モダンな文法とLombokを積極的に駆使することを推奨する。
 
  - ラムダ式、メソッド参照の活用
-```
+```java:lambda
    [Java7以前]
    List<String> list = new ArrayList<>();
    for (String str : strList) {
@@ -213,7 +214,7 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
           .collect(Collectors.toList());
 ```
  - Optionalの利用
-```
+```java:Optional
    [Java7以前]
    Cashflow cashflow = this.findById(id);
    if (cashflow != null) {
@@ -230,7 +231,7 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
 ```
 
 - Lombokの利用
-```
+```java:Lombok
    [Lombokなし]
    public class Data {
    	
@@ -274,7 +275,7 @@ ControllerとServiceではコンストラクタインジェクションを使用
 
 ### Controllerのテスト
 
-```
+```java:AddressControllerTest.java
 @RunWith(MockitoJUnitRunner.class)
 public class AddressControllerTest {
 
@@ -353,7 +354,7 @@ public class AddressControllerTest {
 
 ### Serviceのテスト
 
-```
+```java:AddressService.java
 @RunWith(MockitoJUnitRunner.class)
 public class AddressServiceTest {
 
