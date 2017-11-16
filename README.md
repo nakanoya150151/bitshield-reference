@@ -10,11 +10,18 @@ TODO
 TODO
 
 ## レイヤリング
+エリックエヴァンスのDDDを参考に記載。
+
+厳密には、Repositoryインタフェースはドメイン層に含まれるが(RepositoryImplクラスはインフラストラクチャ)、
+実装クラスをベースに色分けしている。
+
+疎結合になるよう、下位の層が上位の層を参照することは禁止とする。
  
- * プレゼン層
+ * プレゼンテーション層
    * RestAPIのエンドポイントを提供する。
    * 主にControllerクラスで構成される。
    * Controllerクラスではビジネスロジックの呼び出しにServiceクラスを利用する。
+   * 原則として、リクエスト/レスポンスで送受信するVOとEntityは区別する。
  
  * アプリケーション層
    * 業務ロジックの呼び出し口となる。
@@ -166,9 +173,25 @@ public interface JpaRepositoryBase<T extends EntityBase, ID extends Serializable
 
 
 ### 例外ハンドリング
+Javaには検査例外(Exception系)と非検査例外(RuntimeException系)が存在するが、bitshieldでは業務例外を非検査例外に統一する。
+
+スローされた例外はControllerをまたいで@ControllerAdviceが付与されたハンドリングクラスで処理される。
+
+```
+@ControllerAdvice
+public class ApplicationExceptionHander extends ResponseEntityExceptionHandler {
+
+	@ExceptionHandler
+	public ResponseEntity<Object> handleException(ApplicationException ex, WebRequest request) {
+		log.error(ex.getMessage(), ex);
+		return super.handleExceptionInternal(ex, ex.getError(), null, ex.getError().getStatus(), request);
+	}
+}
+```
 
 ## 実装ポリシー
 Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
+
 モダンな文法とLombokを積極的に駆使することを推奨する。
 
  - ラムダ式、メソッド参照の活用
@@ -242,9 +265,11 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
 ```
 ## テストポリシー
 JUnit5を使用する。
-Controller、Service、Entity毎にテストクラスを作成し、
-他レイヤーの呼び出しはMockitoを使用する。
+
+Controller、Service、Entity毎にテストクラスを作成し、他レイヤーの呼び出しはMockitoを使用する。
+
 テスト実行を高速化するため、DIコンテナを使用せずにテストが完結するよう
+
 ControllerとServiceではコンストラクタインジェクションを使用する。
 
 ### Controllerのテスト
