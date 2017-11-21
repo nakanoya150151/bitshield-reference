@@ -264,6 +264,28 @@ Java8/9とJava6/7は全く別物と考えて実装を行う必要がある。
    }
 
 ```
+
+- コンストラクタインジェクションの利用
+
+Springではコンストラクタインジェクションが推奨されることからフィールドインジェクションではなくコンストラクタインジェクションを使用します。  
+
+参考) http://pppurple.hatenablog.com/entry/2016/12/29/233141
+
+コンストラクタの記述が煩雑になることからLombokとの併用を推奨します。  
+@RequiredArgsConstructorは初期化されていないfinalなフィールドをパラメータに取るコンストラクタを生成します。  
+@NonNullが付与されたフィールドはnullチェックが実行され、パラメータがnullの場合はNullPointerExceptionが投げられます。  
+
+```java
+@RequiredArgsConstructor
+@Component
+public class ConstructorInjectionWithLombok {
+    @NonNull
+    private final MyServiceA myServiceA;
+    @NonNull
+    private final MyServiceB myServiceB;
+}
+```
+
 ## テストポリシー
 JUnit5を使用する。
 
